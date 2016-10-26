@@ -16,18 +16,31 @@ var vowelIndexer = function(word) {
 	 } else {}
  };
 };
-//
-// var punctPrep = function(workingArray) {
-// 	var punctString =
-// 	if
-// 	.search
-// 	.contains
-// }
-//
+
+var stringPrep = function(stringInput) {
+	// var punctString = stringInput.replace(/[,.?!]/g, "");
+	// var puncStrSplit = punctString.split(" ");
+	// var puncStrJoin = puncStrSplit.join(" ");
+	// var singleSpace = puncStrJoin.replace(/"  "/g, " ");
+	// var casePrep = puncStrSplit.toLowerCase();
+	var unwantedChars = [",", ".", "?", "!"];
+	var stringOutput = "";
+	for (var index = 0; index < stringInput.length; index++) {
+		if (!unwantedChars.includes(stringInput[index])){
+			stringOutput += stringInput[index];
+		} else {
+			continue
+		}
+	}
+	return stringOutput.toLowerCase();
+};
+
+
+
 var pigLatinize = function(word) {
 	var vowelArray = ["a", "e", "i", "o", "u"];
 	var firstVowel = vowelIndexer(word);
-	if (vowelArray.includes(word[0])) {
+	if (vowelArray.includes(word[0]) || word.length === 1) {
 		word += "ay";
 	} else if (!vowelArray.includes(word[0])) {
 		word = word.substr(firstVowel) + word.substr(0, firstVowel) + "ay";
@@ -36,21 +49,25 @@ var pigLatinize = function(word) {
 };
 
 var multiLatinizer = function(arrayOfStrings) {
-		return arrayOfStrings.map(function(string) {
+	return arrayOfStrings.map(function(string) {
+		if (!parseInt(string)) {
 			return pigLatinize(string);
-		});
+		} else {
+			return string;
+		}
+	});
 };
 
 $(document).ready(function() {
 	$("form").submit(function(event) {
 		event.preventDefault();
 		var string = $("#textInput").val();
-		var workingArray = string.split(" ");
+		var workingString = stringPrep(string);
+		var wordArray = workingString.split(" ");
+		var latinWords = multiLatinizer(wordArray);
 
-		var wordArray = multiLatinizer(workingArray);
 
-
-		var result = wordArray.join(' ');
+		var result = latinWords.join(' ');
 		$("#latinResult").text(result);
 	});
 });
